@@ -3,7 +3,7 @@
 # @Author: wells
 # @Date:   2016-01-02 12:27:42
 # @Last Modified by:   wells
-# @Last Modified time: 2016-01-02 18:24:31
+# @Last Modified time: 2016-01-05 15:01:17
 import urllib
 import urllib2
 import re
@@ -58,7 +58,7 @@ class Spider:
 		return fileName.replace('?',"")
 spider=Spider("http://blog.sina.com.cn/s/articlelist_1347712670_0_1.html")
 for x in range(1,59):
-	url="http://blog.sina.com.cn/s/articlelist_1191211465_0_"+str(x)+".html"
+	url="http://blog.sina.com.cn/s/articlelist_1347712670_0_"+str(x)+".html"
 	# print url
 	content=spider.getContent(url);
 	spider.getDetail(content)
