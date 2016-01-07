@@ -10,11 +10,12 @@ import urllib2
 import re
 import os
 import mysql
+import time
 
 class Spider:
 	def __init__(self,url,dbhelper):
 		self.siteUrl=url
-		self.dbhelper=dbhelper 
+		self.dbhelper=dbhelper
 	def getContent(self,url):
 		request=urllib2.Request(url)
 		respone=urllib2.urlopen(request)
@@ -35,13 +36,12 @@ class Spider:
 			sContent=spattern.findall(sData)
 			print sContent
 			for s in sContent:
-			
+
 				# print '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
 				html=s
 				s=articlPattern.sub('',s)
 				s=s.replace('&nbsp;',' ')
 				s="标题："+info[1]+"\n"+"原文链接："+sUrl+"\n\n"+s
-				print s
 				self.writeDateToMysql(s,html,sUrl,"马未都",info[1])
 				#self.writeData(s,info[1].decode("utf-8"))
 			    # print sData
@@ -61,9 +61,9 @@ class Spider:
 		f.close()
 		print fileName,".txt  ----写入完成！"
 	def writeDateToMysql(self,cotent,html,url,author,title):
+		h=html.replace("'","\\'").replace('"','\\"')
 		sql='insert blog(blogContent,blogContentHtml,blogTitle, blogAuthor, blogSiteUrl, blogCreateDate ) values('
-		sql+='"'+content+'","'+html+'","'+title+'","'+author+'","'+url+'","'+getNowDate()+");"
-		print sql
+		sql+='"'+content+'","'+h+'","'+title+'","'+author+'","'+url+'","'+self.getNowDate()+");"
 		count=self.dbhelper.ExecSql(sql)
 		if(count>0):
 			print url,"添加成功!"
@@ -71,7 +71,7 @@ class Spider:
 			print url,"添加失败!"
 	def clearCode(self,fileName):
 		return fileName.replace('?',"")
-	def getNowDate():
+	def getNowDate(self):
 		return time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
 dbhelper=mysql.MysqlDBHelper()
 spider=Spider("http://blog.sina.com.cn/s/articlelist_1347712670_0_1.html",dbhelper)
